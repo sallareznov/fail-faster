@@ -17,6 +17,8 @@ object Main {
     val compiler = launcher.createCompiler()
     compiler.addInputSource(new File("spooned"))
     compiler.compile()
+
+
   }
 
 }
