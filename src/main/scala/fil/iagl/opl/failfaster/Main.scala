@@ -2,23 +2,17 @@ package fil.iagl.opl.failfaster
 
 import java.io.File
 
-import fil.iagl.opl.failfaster.processor.NotNullParametersCheckerProcessor
-import spoon.Launcher
+import org.backuity.clist.Cli
 
+/**
+  * Entry point
+  */
 object Main {
 
   def main(args: Array[String]) {
-    val launcher = new Launcher()
-    launcher.addProcessor(new NotNullParametersCheckerProcessor)
-    launcher.addInputResource("../m1s2/CAR/tp1/src")
-    launcher.run()
-
-    // we verify that the code produced compiles
-    val compiler = launcher.createCompiler()
-    compiler.addInputSource(new File("spooned"))
-    compiler.compile()
-
-
+    Cli.parse(args).withProgramName("failfaster").withCommand(ProcessingCommand) {
+      case command => command.run(Array(ProcessingCommand.inputSourcePath) ++ new File("lib").listFiles().map(_.getAbsolutePath))
+    }
   }
 
 }
