@@ -13,10 +13,13 @@ import scala.collection.mutable
 
 class UnitTestsRunner {
 
-  def getClassLoader(outputPath: File): ClassLoader = URLClassLoader.newInstance(Array(outputPath.toURI.toURL), getClass.getClassLoader)
+  def getClassLoader(outputPath: File): ClassLoader = {
+    URLClassLoader.newInstance(Array(outputPath.toURI.toURL), getClass.getClassLoader)
+  }
 
   def getClassForFile(file: Path, classLoader: ClassLoader): java.lang.Class[_] = {
-    val tokens = file.toString.replace("/", ".").split("\\.")
+    val tokens = file.toString.replace(File.separator, ".").split("\\.")
+
     Class.forName(tokens.drop(1).dropRight(1).mkString("."), true, classLoader)
   }
 
@@ -27,15 +30,14 @@ class UnitTestsRunner {
   }
 
   def runTests(binaryOutputDirectory: File): Unit = {
-    val sourceFiles = Files.walk(Paths.get(binaryOutputDirectory.getPath)).collect(Collectors.toList()).asScala.filter(file => {
-      Files.isRegularFile(file) && file.toFile.getPath.endsWith(UnitTestsRunner.TEST_CLASS_FILES_SUFFIX)
-    }).toList
+    val testFiles = getTestFiles(binaryOutputDirectory)
     val classLoader = getClassLoader(binaryOutputDirectory)
-    val classes = sourceFiles.map(getClassForFile(_, classLoader))
-    println(classes.length)
+    val classes = testFiles.map(getClassForFile(_, classLoader))
+    classes.foreach(println)
     val runner = new JUnitCore()
     val result = runner.run(classes: _*)
-    println(result.getFailures.asScala.head.getTrace)
+    //println(result.getFailures.asScala.head.getTrace)
+    result.getFailures.asScala.foreach(f => println(f.getTrace))
     println("Tests run: " + result.getRunCount + ", Failures: " + result.getFailureCount + ", Skipped: " + result.getIgnoreCount)
   }
 
