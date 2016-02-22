@@ -7,10 +7,10 @@ assemblyJarName in assembly := "failfaster.jar"
 
 libraryDependencies ++= Seq(
   "fr.inria.gforge.spoon" % "spoon-core" % "5.0.0",
+  "commons-cli" % "commons-cli" % "1.3.1",
+  "org.apache.commons" % "commons-lang3" % "3.4",
   "org.scalactic" %% "scalactic" % "2.2.6",
   "org.scalatest" %% "scalatest" % "2.2.6" % "test",
-  "org.backuity.clist" %% "clist-core" % "2.0.1",
-  "org.backuity.clist" %% "clist-macros" % "2.0.1" % "provided",
   "junit" % "junit" % "4.12",
   "org.mockito" % "mockito-all" % "1.10.19",
   "org.hamcrest" % "hamcrest-all" % "1.3",
@@ -21,3 +21,13 @@ libraryDependencies ++= Seq(
 )
 
 resolvers := Seq("Maven Repository for JDT Compiler release" at "https://repo.eclipse.org/content/repositories/eclipse-staging/")
+
+assemblyMergeStrategy in assembly := {
+  case PathList("org", "powermock", xs@_*) => MergeStrategy.last
+  case PathList("org", "powermockito", xs@_*) => MergeStrategy.last
+  case PathList("org", "mockito", xs@_*) => MergeStrategy.last
+  case PathList("org", "hamcrest", xs@_*) => MergeStrategy.last
+  case x =>
+    val oldStrategy = (assemblyMergeStrategy in assembly).value
+    oldStrategy(x)
+}
