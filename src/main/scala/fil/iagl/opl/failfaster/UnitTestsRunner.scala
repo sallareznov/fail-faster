@@ -19,7 +19,6 @@ class UnitTestsRunner {
 
   def getClassForFile(file: Path, classLoader: ClassLoader): java.lang.Class[_] = {
     val tokens = file.toString.replace(File.separator, ".").split("\\.")
-
     Class.forName(tokens.drop(1).dropRight(1).mkString("."), true, classLoader)
   }
 
@@ -49,10 +48,5 @@ object UnitTestsRunner {
   val CLASSPATH_ARGUMENT = "-cp"
   val TEST_CLASS_FILES_SUFFIX = "Test.class"
   val TEST_FILES_SUFFIX = "Test.java"
-
-  def main(args: Array[String]) {
-    new UnitTestsRunner().runTests(new File("spooned-classes"))
-  }
-
 
 }
