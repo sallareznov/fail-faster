@@ -1,7 +1,6 @@
 package fil.iagl.opl.failfaster
 
 import java.io.File
-import java.lang.Class
 import java.net.URLClassLoader
 import java.nio.file.{Files, Path, Paths}
 import java.util.stream.Collectors
@@ -13,16 +12,16 @@ import scala.collection.mutable
 
 class UnitTestsRunner {
 
-  def getClassLoader(outputPath: File): ClassLoader = {
+  private def getClassLoader(outputPath: File): ClassLoader = {
     URLClassLoader.newInstance(Array(outputPath.toURI.toURL), getClass.getClassLoader)
   }
 
-  def getClassForFile(file: Path, classLoader: ClassLoader): java.lang.Class[_] = {
+  private def getClassForFile(file: Path, classLoader: ClassLoader): java.lang.Class[_] = {
     val tokens = file.toString.replace(File.separator, ".").split("\\.")
     Class.forName(tokens.drop(1).dropRight(1).mkString("."), true, classLoader)
   }
 
-  def getTestFiles(binaryOutputDirectory: File): mutable.Buffer[Path] = {
+  private def getTestFiles(binaryOutputDirectory: File): mutable.Buffer[Path] = {
     Files.walk(Paths.get(binaryOutputDirectory.getPath)).collect(Collectors.toList()).asScala.filter(file => {
       Files.isRegularFile(file) && file.toFile.getPath.endsWith(UnitTestsRunner.TEST_CLASS_FILES_SUFFIX)
     })

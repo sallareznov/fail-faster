@@ -1,5 +1,6 @@
 package fil.iagl.opl.failfaster.processor
 
+import fil.iagl.opl.failfaster.ElementsModificationCounter
 import spoon.processing.AbstractProcessor
 import spoon.reflect.code.CtCodeSnippetExpression
 import spoon.reflect.declaration.CtExecutable
@@ -10,9 +11,9 @@ import scala.collection.JavaConverters._
   * A processor that inspects class executables (constructors and methods) and inserts an if statement
   * at the beginning of those executables to check the non nullity of the non primitive parameters.
   */
-class NotNullParametersCheckerProcessor extends AbstractProcessor[CtExecutable[_]] {
+class NotNullParametersCheckerProcessor(elementsModificationCounter: ElementsModificationCounter) extends AbstractProcessor[CtExecutable[_]] {
 
-  override def isToBeProcessed(candidate: CtExecutable[_]) = candidate.getBody != null
+  override def isToBeProcessed(candidate: CtExecutable[_]): Boolean = candidate.getBody != null
 
   override def process(element: CtExecutable[_]): Unit = {
     val nonPrimitiveParameters = element.getParameters.asScala.filter(!_.getType.isPrimitive)
@@ -31,6 +32,7 @@ class NotNullParametersCheckerProcessor extends AbstractProcessor[CtExecutable[_
       nonNullityOfParametersIfStatement.setCondition(nonNullityOfParametersCondition)
       nonNullityOfParametersIfStatement.setThenStatement(thrownException)
       element.getBody.insertBegin(nonNullityOfParametersIfStatement)
+      elementsModificationCounter.incrementNbOfModifiedElements()
       // the code above should produce : if (param1 != null || ... || paramN != null) { throw new IllegalArgumentException(); }
     }
   }
