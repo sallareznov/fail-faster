@@ -18,8 +18,7 @@ libraryDependencies ++= Seq(
   "org.powermock" % "powermock-api-mockito" % "1.6.4",
   "org.powermock" % "powermock-module-junit4" % "1.6.4",
   "cglib" % "cglib-nodep" % "3.2.0",
-  "org.alcibiade" % "asciiart-core" % "1.1.0"
-
+  "de.vandermeer" % "asciitable" % "0.2.4"
 )
 
 resolvers := Seq("Maven Repository for JDT Compiler release" at "https://repo.eclipse.org/content/repositories/eclipse-staging/")
