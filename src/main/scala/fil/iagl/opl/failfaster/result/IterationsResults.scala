@@ -1,4 +1,4 @@
-package fil.iagl.opl.failfaster
+package fil.iagl.opl.failfaster.result
 
 import scala.collection.mutable.ListBuffer
 
