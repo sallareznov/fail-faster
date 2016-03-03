@@ -5,7 +5,7 @@ organization := "fil.iagl.opl.failfaster"
 mainClass in assembly := Some("fil.iagl.opl.failfaster.Main")
 assemblyJarName in assembly := "failfaster.jar"
 
-libraryDependencies ++= Seq(
+libraryDependencies := Seq(
   "fr.inria.gforge.spoon" % "spoon-core" % "5.0.0",
   "commons-cli" % "commons-cli" % "1.3.1",
   "org.apache.commons" % "commons-lang3" % "3.4",
@@ -18,10 +18,13 @@ libraryDependencies ++= Seq(
   "org.powermock" % "powermock-api-mockito" % "1.6.4",
   "org.powermock" % "powermock-module-junit4" % "1.6.4",
   "cglib" % "cglib-nodep" % "3.2.0",
-  "de.vandermeer" % "asciitable" % "0.2.4"
+  "de.vandermeer" % "asciitable" % "0.2.5"
 )
 
-resolvers := Seq("Maven Repository for JDT Compiler release" at "https://repo.eclipse.org/content/repositories/eclipse-staging/")
+resolvers := Seq(
+"Maven Repository for JDT Compiler release" at "https://repo.eclipse.org/content/repositories/eclipse-staging/",
+"Sonatype OSS Releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+)
 
 assemblyMergeStrategy in assembly := {
   case PathList("org", "powermock", xs@_*) => MergeStrategy.last
