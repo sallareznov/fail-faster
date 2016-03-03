@@ -2,20 +2,24 @@ package fil.iagl.opl.failfaster
 
 import java.io.File
 
-import fil.iagl.opl.failfaster.constants.ConstantsHandler
-import org.apache.commons.cli.{DefaultParser, HelpFormatter, MissingOptionException}
+import fil.iagl.opl.failfaster.constants.{ ConstantsKeys, ConstantsHandler }
+import org.apache.commons.cli.{ Options, DefaultParser, HelpFormatter, MissingOptionException }
 
 object Main {
 
-  val constantsHandler = new ConstantsHandler()
-
-  val PROPERTIES_FILE_PATH = "/fil/iagl/opl/failfaster/constants/constants.properties"
-  constantsHandler.loadConstantsFile(getClass.getResourceAsStream(PROPERTIES_FILE_PATH))
-  val INPUT_SOURCES_PATH_ARGUMENT = constantsHandler.getProperty("inputSourcesPathArgument").get
-  val INPUT_TESTS_PATH_ARGUMENT = constantsHandler.getProperty("inputTestsPathArgument").get
-  val HELP_ARGUMENT = constantsHandler.getProperty("helpArgument").get
+  private def usage(options: Options): Unit = {
+    val formatter = new HelpFormatter()
+    formatter.printHelp("transforms a fail-safe project to a fail-fast one", options)
+  }
 
   def main(args: Array[String]) {
+    val constantsHandler = new ConstantsHandler()
+
+    val PROPERTIES_FILE_PATH = "/fil/iagl/opl/failfaster/constants/constants.properties"
+    constantsHandler.loadConstantsFile(getClass.getResourceAsStream(PROPERTIES_FILE_PATH))
+    val INPUT_SOURCES_PATH_ARGUMENT = constantsHandler.getProperty(ConstantsKeys.INPUT_SOURCES_PATH_ARGUMENT_KEY)
+    val INPUT_TESTS_PATH_ARGUMENT = constantsHandler.getProperty(ConstantsKeys.INPUT_TESTS_PATH_ARGUMENT_KEY)
+
     val optionsHandler = new OptionsHandler()
     val options = optionsHandler.handleOptions(args, constantsHandler)
     val commandLineParser = new DefaultParser()
@@ -32,11 +36,8 @@ object Main {
 
       val unitTestsRunner = new UnitTestsRunner()
       unitTestsRunner.runTests(new File("spooned-classes"))
-    }
-    catch {
-      case e: MissingOptionException =>
-        val formatter = new HelpFormatter()
-        formatter.printHelp("transforms a fail-safe project to a fail-fast one", options)
+    } catch {
+      case e: MissingOptionException => usage(options)
     }
   }
 

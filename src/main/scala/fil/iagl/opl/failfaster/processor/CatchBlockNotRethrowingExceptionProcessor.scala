@@ -2,7 +2,7 @@ package fil.iagl.opl.failfaster.processor
 
 import fil.iagl.opl.failfaster.ElementsModificationCounter
 import spoon.processing.AbstractProcessor
-import spoon.reflect.code.{CtCatch, CtThrow}
+import spoon.reflect.code.{ CtCatch, CtThrow }
 import spoon.reflect.visitor.filter.TypeFilter
 
 class CatchBlockNotRethrowingExceptionProcessor(elementsModificationCounter: ElementsModificationCounter) extends AbstractProcessor[CtCatch] {

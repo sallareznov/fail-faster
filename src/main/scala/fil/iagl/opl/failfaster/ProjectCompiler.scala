@@ -2,14 +2,14 @@ package fil.iagl.opl.failfaster
 
 import java.io.File
 
-import fil.iagl.opl.failfaster.constants.ConstantsHandler
+import fil.iagl.opl.failfaster.constants.{ ConstantsKeys, ConstantsHandler }
 import spoon.Launcher
 
 class ProjectCompiler {
 
   def compileSourcesFiles(sourcesFiles: File, constantsHandler: ConstantsHandler): Unit = {
     val compiler = new Launcher().createCompiler()
-    compiler.getFactory.getEnvironment.setComplianceLevel(8)
+    compiler.getFactory.getEnvironment.setComplianceLevel(ProjectCompiler.JAVA_COMPLIANCE_LEVEL)
     compiler.addInputSource(sourcesFiles)
     compiler.getFactory.getEnvironment.setAutoImports(true)
     compiler.compile()
@@ -17,19 +17,21 @@ class ProjectCompiler {
 
   def compileTestsFiles(testsFiles: File, sourcesFiles: File, constantsHandler: ConstantsHandler): Unit = {
     val compiler = new Launcher().createCompiler()
-    compiler.getFactory.getEnvironment.setComplianceLevel(8)
+    compiler.getFactory.getEnvironment.setComplianceLevel(ProjectCompiler.JAVA_COMPLIANCE_LEVEL)
     compiler.addInputSource(testsFiles)
-    val librairiesDirectory = constantsHandler.getProperty("librairiesDirectory").get
-    val sourceClasspath = Array(
-      sourcesFiles.getCanonicalPath, testsFiles.getCanonicalPath,
-      librairiesDirectory + File.separator + constantsHandler.getProperty("assertJJarName").get,
-      librairiesDirectory + File.separator + constantsHandler.getProperty("junitJarName").get,
-      librairiesDirectory + File.separator + constantsHandler.getProperty("mockitoJarName").get,
-      librairiesDirectory + File.separator + constantsHandler.getProperty("powermockitoJarName").get,
-      librairiesDirectory + File.separator + constantsHandler.getProperty("powermockJarName").get
-    )
-    compiler.setSourceClasspath(sourceClasspath: _*)
+    val librairiesDirectory = constantsHandler.getProperty(ConstantsKeys.LIBRAIRES_DIRECTORY_KEY)
+    val dependencies = constantsHandler.getProperty(ConstantsKeys.DEPENDENCIES_KEY).split(ProjectCompiler.DEPENDENCIES_SEPARATOR)
+    val sourceClasspathAsList = List(sourcesFiles.getCanonicalPath, testsFiles.getCanonicalPath) ++
+      dependencies.map(dependency => librairiesDirectory + File.separator + dependency)
+    compiler.setSourceClasspath(sourceClasspathAsList: _*)
     compiler.compile()
   }
+
+}
+
+object ProjectCompiler {
+
+  val DEPENDENCIES_SEPARATOR = ","
+  val JAVA_COMPLIANCE_LEVEL = 8
 
 }

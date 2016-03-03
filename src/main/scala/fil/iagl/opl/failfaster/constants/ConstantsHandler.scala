@@ -5,7 +5,7 @@ import java.util.Properties
 
 class ConstantsHandler {
 
-  val properties = new Properties()
+  private val properties = new Properties()
 
   def loadConstantsFile(inputStream: InputStream): Unit = {
     properties.clear()
@@ -13,13 +13,6 @@ class ConstantsHandler {
     inputStream.close()
   }
 
-  def getProperty(propertyKey: String): Option[String] = {
-    if (properties.isEmpty) {
-      None
-    }
-    else {
-      Some(properties.getProperty(propertyKey))
-    }
-  }
+  def getProperty(propertyKey: String): String = properties.getProperty(propertyKey)
 
 }

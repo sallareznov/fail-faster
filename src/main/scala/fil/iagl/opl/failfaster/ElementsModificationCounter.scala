@@ -2,7 +2,8 @@ package fil.iagl.opl.failfaster
 
 class ElementsModificationCounter {
 
-  var nbOfModifiedElements = 0
+  // TODO find a way to avoid the mutable field
+  private var nbOfModifiedElements = 0
 
   def incrementNbOfModifiedElements(): Unit = nbOfModifiedElements += 1
 

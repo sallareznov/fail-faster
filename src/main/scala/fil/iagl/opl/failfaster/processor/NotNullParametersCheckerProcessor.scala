@@ -8,9 +8,9 @@ import spoon.reflect.declaration.CtExecutable
 import scala.collection.JavaConverters._
 
 /**
-  * A processor that inspects class executables (constructors and methods) and inserts an if statement
-  * at the beginning of those executables to check the non nullity of the non primitive parameters.
-  */
+ * A processor that inspects class executables (constructors and methods) and inserts an if statement
+ * at the beginning of those executables to check the non nullity of the non primitive parameters.
+ */
 class NotNullParametersCheckerProcessor(elementsModificationCounter: ElementsModificationCounter) extends AbstractProcessor[CtExecutable[_]] {
 
   override def isToBeProcessed(candidate: CtExecutable[_]): Boolean = candidate.getBody != null

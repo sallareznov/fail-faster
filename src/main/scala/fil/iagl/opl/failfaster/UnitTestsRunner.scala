@@ -2,7 +2,7 @@ package fil.iagl.opl.failfaster
 
 import java.io.File
 import java.net.URLClassLoader
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{ Files, Path, Paths }
 import java.util.stream.Collectors
 
 import org.junit.runner.JUnitCore
@@ -17,8 +17,8 @@ class UnitTestsRunner {
   }
 
   private def getClassForFile(file: Path, classLoader: ClassLoader): java.lang.Class[_] = {
-    val tokens = file.toString.replace(File.separator, ".").split("\\.")
-    Class.forName(tokens.drop(1).dropRight(1).mkString("."), true, classLoader)
+    val tokens = file.toString.replace(File.separator, UnitTestsRunner.CLASS_NAME_TOKENS_SEPARATOR).split("\\.")
+    Class.forName(tokens.drop(1).dropRight(1).mkString(UnitTestsRunner.CLASS_NAME_TOKENS_SEPARATOR), true, classLoader)
   }
 
   private def getTestFiles(binaryOutputDirectory: File): mutable.Buffer[Path] = {
@@ -43,6 +43,7 @@ class UnitTestsRunner {
 
 object UnitTestsRunner {
 
+  val CLASS_NAME_TOKENS_SEPARATOR = "."
   val SOURCE_FILES_SUFFIX = ".java"
   val CLASSPATH_ARGUMENT = "-cp"
   val TEST_CLASS_FILES_SUFFIX = "Test.class"
