@@ -6,6 +6,8 @@ import java.util.Properties
 import fil.iagl.opl.failfaster.constants.{ ConstantsKeys, ConstantsHandler }
 import org.apache.commons.cli._
 
+import scala.util.control.NonFatal
+
 object Main {
 
   private def usage(options: Options): Unit = {
@@ -39,7 +41,7 @@ object Main {
       val unitTestsRunner = new UnitTestsRunner()
       unitTestsRunner.runTests(new File("spooned-classes"))
     } catch {
-      case _: MissingOptionException | _: UnrecognizedOptionException => usage(options)
+      case NonFatal(_) => usage(options)
     }
   }
 
