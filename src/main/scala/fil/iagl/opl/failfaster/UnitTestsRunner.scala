@@ -18,7 +18,8 @@ class UnitTestsRunner {
 
   private def getClassForFile(file: Path, classLoader: ClassLoader): java.lang.Class[_] = {
     val tokens = file.toString.replace(File.separator, UnitTestsRunner.CLASS_NAME_TOKENS_SEPARATOR).split("\\.")
-    Class.forName(tokens.drop(1).dropRight(1).mkString(UnitTestsRunner.CLASS_NAME_TOKENS_SEPARATOR), true, classLoader)
+    classLoader.loadClass(tokens.drop(1).dropRight(1).mkString(UnitTestsRunner.CLASS_NAME_TOKENS_SEPARATOR))
+    //Class.forName(, true, classLoader)
   }
 
   private def getTestFiles(binaryOutputDirectory: File): mutable.Buffer[Path] = {
@@ -31,10 +32,12 @@ class UnitTestsRunner {
     val testFiles = getTestFiles(binaryOutputDirectory)
     val classLoader = getClassLoader(binaryOutputDirectory)
     val classes = testFiles.map(getClassForFile(_, classLoader))
-    classes.foreach(println)
+    val cl = ClassLoader.getSystemClassLoader
+
+    cl.asInstanceOf[URLClassLoader].getURLs.foreach(println)
+    println()
     val runner = new JUnitCore()
     val result = runner.run(classes: _*)
-    //println(result.getFailures.asScala.head.getTrace)
     result.getFailures.asScala.foreach(f => println(f.getTrace))
     println("Tests run: " + result.getRunCount + ", Failures: " + result.getFailureCount + ", Skipped: " + result.getIgnoreCount)
   }
