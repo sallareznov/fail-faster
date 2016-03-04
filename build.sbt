@@ -11,6 +11,7 @@ libraryDependencies := Seq(
   "org.apache.commons" % "commons-lang3" % "3.4",
   "org.scalactic" %% "scalactic" % "2.2.6",
   "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+  "org.scalamock" % "scalamock-scalatest-support_2.11" % "3.2.2",
   "junit" % "junit" % "4.12",
   "org.mockito" % "mockito-all" % "1.10.19",
   "org.hamcrest" % "hamcrest-all" % "1.3",
