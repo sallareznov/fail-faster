@@ -15,11 +15,8 @@ class OptionsBuilder {
     val inputTestsPathOption = new cli.Option(constantsHandler.getProperty(ConstantsKeys.INPUT_TESTS_PATH_ARGUMENT_KEY), true, OptionsBuilder.INPUT_TESTS_PATH_OPTION_DESCRIPTION)
     inputTestsPathOption.setRequired(true)
 
-    val helpOption = new cli.Option(constantsHandler.getProperty(ConstantsKeys.HELP_ARGUMENT_KEY), false, OptionsBuilder.HELP_OPTION_DESCRIPTION)
-
     options.addOption(inputSourcesPathOption)
     options.addOption(inputTestsPathOption)
-    options.addOption(helpOption)
 
     options
   }
@@ -30,6 +27,5 @@ object OptionsBuilder {
 
   val INPUT_SOURCES_PATH_OPTION_DESCRIPTION = "the path to the source folder of the project to transform"
   val INPUT_TESTS_PATH_OPTION_DESCRIPTION = "the path to the tests folder of the project to transform"
-  val HELP_OPTION_DESCRIPTION = "display the usage of the program"
 
 }
