@@ -13,7 +13,7 @@ import scala.collection.JavaConverters._
  */
 class NotNullParametersCheckerProcessor(elementsModificationCounter: ElementsModificationCounter) extends AbstractProcessor[CtExecutable[_]] {
 
-  override def isToBeProcessed(candidate: CtExecutable[_]): Boolean = candidate.getBody != null
+  override def isToBeProcessed(candidate: CtExecutable[_]): Boolean = Option(candidate.getBody).isDefined
 
   override def process(element: CtExecutable[_]): Unit = {
     val nonPrimitiveParameters = element.getParameters.asScala.filter(!_.getType.isPrimitive)
