@@ -4,7 +4,7 @@ import java.io.File
 import java.util.Properties
 
 import fil.iagl.opl.failfaster.constants.{ ConstantsKeys, ConstantsHandler }
-import org.apache.commons.cli.{ Options, DefaultParser, HelpFormatter, MissingOptionException }
+import org.apache.commons.cli._
 
 object Main {
 
@@ -39,7 +39,7 @@ object Main {
       val unitTestsRunner = new UnitTestsRunner()
       unitTestsRunner.runTests(new File("spooned-classes"))
     } catch {
-      case e: MissingOptionException => usage(options)
+      case _: MissingOptionException | _: UnrecognizedOptionException => usage(options)
     }
   }
 
