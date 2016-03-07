@@ -22,7 +22,7 @@ class ProjectCompiler {
     val librairiesDirectory = constantsHandler.getProperty(ConstantsKeys.LIBRAIRES_DIRECTORY_KEY)
     val dependencies = constantsHandler.getProperty(ConstantsKeys.DEPENDENCIES_KEY).split(ProjectCompiler.DEPENDENCIES_SEPARATOR)
     val sourceClasspath = List(sourcesFiles.getCanonicalPath, testsFiles.getCanonicalPath) ++
-    dependencies.map(dependency => librairiesDirectory + File.separator + dependency)
+      dependencies.map(dependency => librairiesDirectory + File.separator + dependency)
     compiler.setSourceClasspath(sourceClasspath: _*)
     compiler.compile()
   }
