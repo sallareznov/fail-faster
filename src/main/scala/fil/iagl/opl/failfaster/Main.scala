@@ -2,6 +2,7 @@ package fil.iagl.opl.failfaster
 
 import java.io.File
 import java.util.Properties
+import javax.tools.ToolProvider
 
 import fil.iagl.opl.failfaster.constants.{ConstantsKeys, ConstantsHandler}
 import org.apache.commons.cli._
@@ -33,13 +34,15 @@ object Main {
         val sourceFiles = new File(commandLine.getOptionValue(INPUT_SOURCES_PATH_ARGUMENT))
         val testFiles = new File(commandLine.getOptionValue(INPUT_TESTS_PATH_ARGUMENT))
 
-        val projectCompiler = new ProjectCompiler()
+        val compiler = ToolProvider.getSystemJavaCompiler
+        val projectCompiler = new ProjectCompiler(compiler)
 
-        projectCompiler.compileSourcesFiles(sourceFiles, constantsHandler)
-        projectCompiler.compileTestsFiles(testFiles, sourceFiles, constantsHandler)
+        projectCompiler.compileSourceFiles(sourceFiles)
+        projectCompiler.compileTestFiles(testFiles, sourceFiles, constantsHandler)
 
         val unitTestsRunner = new UnitTestsRunner()
-        unitTestsRunner.runTests(new File("spooned-classes"))
+        unitTestsRunner.runTests(testFiles, sourceFiles)
+
       case Failure(exception) => usage(options)
     }
   }

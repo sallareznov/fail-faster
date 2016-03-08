@@ -2,7 +2,7 @@ package fil.iagl.opl.failfaster
 
 import java.io.File
 import java.net.URLClassLoader
-import java.nio.file.{ Files, Path, Paths }
+import java.nio.file.{Files, Path, Paths}
 import java.util.stream.Collectors
 
 import org.junit.runner.JUnitCore
@@ -12,32 +12,26 @@ import scala.collection.mutable
 
 class UnitTestsRunner {
 
-  private def getClassLoader(outputPath: File): ClassLoader = {
-    URLClassLoader.newInstance(Array(outputPath.toURI.toURL), getClass.getClassLoader)
-  }
+  private def getClassLoader(sourcesFile: File, testsFile: File): ClassLoader = URLClassLoader.newInstance(Array(sourcesFile.toURI.toURL, testsFile.toURI.toURL))
 
-  private def getClassForFile(file: Path, classLoader: ClassLoader): java.lang.Class[_] = {
+  private def getClassForFile(file: Path, sourceFilePath: File, classLoader: ClassLoader): java.lang.Class[_] = {
     val tokens = file.toString.replace(File.separator, UnitTestsRunner.CLASS_NAME_TOKENS_SEPARATOR).split("\\.")
-    classLoader.loadClass(tokens.drop(1).dropRight(1).mkString(UnitTestsRunner.CLASS_NAME_TOKENS_SEPARATOR))
-    //Class.forName(, true, classLoader)
+    Class.forName(tokens.dropRight(1).mkString(UnitTestsRunner.CLASS_NAME_TOKENS_SEPARATOR), true, classLoader)
   }
 
-  private def getTestFiles(binaryOutputDirectory: File): mutable.Buffer[Path] = {
-    Files.walk(Paths.get(binaryOutputDirectory.getPath)).collect(Collectors.toList()).asScala.filter(file => {
-      Files.isRegularFile(file) && file.toFile.getPath.endsWith(UnitTestsRunner.TEST_CLASS_FILES_SUFFIX)
-    })
+  private def getTestFiles(testsFile: File): mutable.Buffer[Path] = {
+    Files.walk(Paths.get(testsFile.getPath)).collect(Collectors.toList()).asScala.filter(file => {
+      Files.isRegularFile(file) && file.toFile.getPath.endsWith(UnitTestsRunner.TEST_FILES_SUFFIX)
+    }).map(file => testsFile.toPath.relativize(file))
   }
 
-  def runTests(binaryOutputDirectory: File): Unit = {
-    val testFiles = getTestFiles(binaryOutputDirectory)
-    val classLoader = getClassLoader(binaryOutputDirectory)
-    val classes = testFiles.map(getClassForFile(_, classLoader))
-    val cl = ClassLoader.getSystemClassLoader
+  def runTests(testsFile: File, sourcesFile: File): Unit = {
+    val testFiles = getTestFiles(testsFile)
+    val classLoader = getClassLoader(testsFile, sourcesFile)
+    val testClasses = testFiles.map(getClassForFile(_, sourcesFile, classLoader))
 
-    cl.asInstanceOf[URLClassLoader].getURLs.foreach(println)
-    println()
-    val runner = new JUnitCore()
-    val result = runner.run(classes: _*)
+    testClasses.foreach(println)
+    val result = JUnitCore.runClasses(testClasses: _*)
     result.getFailures.asScala.foreach(f => println(f.getTrace))
     println("Tests run: " + result.getRunCount + ", Failures: " + result.getFailureCount + ", Skipped: " + result.getIgnoreCount)
   }

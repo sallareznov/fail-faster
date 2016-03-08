@@ -20,6 +20,7 @@ class IterationsResultsRenderer {
     firstRow.setAlignment(columnsAlignments)
     asciiTable.addRule()
 
+    // adding results of every iteration to the table
     iterationsResults.results.foreach(result => {
       val row = asciiTable.addRow(result.iterationCounter.toString, result.nbOfModifications.toString, result.nbOfFailingTests.toString)
       row.setAlignment(columnsAlignments)
